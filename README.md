@@ -11,4 +11,4 @@ Stefano Piacentini, Giorgio Dho
 ?
 
 ## Extra
-For details see [Details](https)
+For details see [Details]([https](https://github.com/CYGNO-Analysis/Limit/blob/main/Details.md))
