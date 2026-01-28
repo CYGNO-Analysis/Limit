@@ -1,0 +1,85 @@
+std::vector<Double_t> Sign;
+std::vector<Double_t> Bkg;
+std::vector<Double_t> LogBf;
+
+void BFanalysis(){
+
+  std::vector<Double_t> BkgLv={10, 100, 500, 1000, 5000, 10000, 100000};
+  std::vector<Double_t> SigLv={1, 5, 10, 20, 40, 60, 100, 200, 400, 600, 1000};
+  
+  double_t temps, tempb, tempbf;
+  
+  std::ifstream inFile("BF_Cl.txt");
+  std::string line;
+  
+  while(getline(inFile, line, '\n')){
+    std::istringstream ss(line);
+
+    ss>>temps>>tempb>>tempbf;
+
+    std::cout << temps<<" " << tempb  << " " << tempbf << std::endl;
+    Sign.push_back(temps);
+    Bkg.push_back(tempb);
+    LogBf.push_back(TMath::Log10(tempbf));
+  }
+  
+  
+  TH1D* h = new TH1D("h","h",200,-40,300);
+  TF1* fit = new TF1("fit","gaus");
+
+  TGraphErrors* g[BkgLv.size()];
+  std::vector<double_t> tempmean;
+  std::vector<double_t> tempsigma;
+  
+  for(int i=0; i<BkgLv.size();i++){
+    for(int j=0;j<SigLv.size();j++){
+
+      for(int k=0;k<Sign.size();k++){
+	if(Bkg[k]==BkgLv[i] && Sign[k]==SigLv[j]){
+	  h->Fill(LogBf[k]);
+	}	
+      }//chiudo for sulla lista
+
+      if(h->GetEntries()>0){
+	h->Fit(fit,"Q");
+	gPad->WaitPrimitive();
+	tempmean.push_back(fit->GetParameter(0));
+	tempsigma.push_back(fit->GetParameter(1));
+      } else {
+	tempmean.push_back(0);
+	tempsigma.push_back(0);
+      }
+      
+      h->Reset();
+
+      std::cout << BkgLv[i] << " " << SigLv[j] <<" " <<fit->GetParameter(0) <<std::endl;
+    }//chiudo for sul signolo livello di segnale
+
+    g[i] = new TGraphErrors(SigLv.size(),&SigLv[0],&tempmean[0],0,&tempsigma[0]);
+    tempmean.clear();
+    tempsigma.clear();
+  }//chiudo for sul bkg
+
+  TFile* file = new TFile("outBF.root","recreate");
+
+  for(int i=0;i< BkgLv.size();i++){
+    g[i]->SetName(Form("Bkg_%.0f",BkgLv[i]));
+    g[i]->SetTitle(Form("Bkg_%.0f",BkgLv[i]));
+    g[i]->SetMarkerStyle(8);
+    g[i]->SetMarkerColor(30+i);
+    g[i]->GetXaxis()->SetTitle("ns");
+    g[i]->GetYaxis()->SetTitle("log(BF)");
+    g[i]->Write();
+  }
+  
+  
+  for(int i=0;i<Sign.size();i++){
+    if(Sign[i]==1000 && Bkg[i]==500){
+      h->Fill(LogBf[i]);
+      std::cout << LogBf[i] << std::endl;
+    }
+  }
+
+  h->Draw();
+
+}

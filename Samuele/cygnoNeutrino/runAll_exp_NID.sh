@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for i in $(ls ../Out_V8_CosThetaFlat_HSBkg_NID/toyMC_txt | grep "$1\b")
+do
+    for j in {1..10000}   
+    do
+        ./runfit ../Out_V8_CosThetaFlat_HSBkg_NID/toyMC_txt/${i}/${j}.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/background.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/signal.txt ${j} ${i} NID
+    done
+done
