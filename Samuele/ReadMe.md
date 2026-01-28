@@ -8,38 +8,27 @@ Neutrino feasibility study described in his [thesis](https://www.arxiv.org/pdf/2
 4. Starting from templates, generate toy MC fake dataset (possibly code generating toys not present in this repo)
 5. Run the Bayesian analysis code
 
-## Content
+## Main code content
 ### spectrum.txt
-Contains the Solar neutrino energy spectrum (they need to be multiplied by 10<sup>11</sup>
+Contains the Solar neutrino energy spectrum (they need to be multiplied by 10<sup>11</sup>)
 
+### TemplateBackgroundED.cpp
+This creates the background template starting from the Geant4 ROOT simulation files 
 
+### TemplateSignal.cpp
+This creates signal template starting from spectrum.txt. Beware: it is important to choose the energy/angular resolution as this determines the size of the bins and the data smearing
 
+### cygnoNeutrino/bkgModel.h 
+This will contain the background model
 
+### cygnoNeutrino/sigModel.h 
+This will contain the signal model
 
+### cygnoNeutrino/runAll.sh 
+This shows how to correctly launch the code for the Bayesian analysis. 
 
--spectrum.txt
-
-contiene il flusso di neutrini solari in funzione dell'energia, credo ci sia un fattore 10^11 da moltiplicare
-
--TemplateBackgroundED.cpp
-
-crea il template del background a partire dagli spettri simulati da CYGNO30
-
--TemplateSignal.cpp
-
-crea i template di segnale a partire dallo spettro dei neutrini solari considerando l'interazione N.B. per queste due cose è importante la risoluzione che determina la dimensione dei bin (1sigma) e fa lo smearing
-
-
--Cygno neutrino
-|
-|-bkgModel.h ha il modello di background
-|
-|-sigModel.h ha il modello del segnale
-|
-|-runAll.sh è interessante xk ti spiega come lanciare il codice per fare l'analisi bayesiana (argomenti)
-|
-
-
-
-5) Girare l'analisi bayesiana che si compila con make, gli argomenti sono il toy.txt template background (che va convertito in txt, ci dovrebbero essere i codici), template segnale in txt (dettagli da runAll.sh)
-./runfit ../Out_V8_CosThetaFlat_HSBkg_NID/toyMC_txt/${i}/${j}.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/background.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/signal.txt ${j} ${i} NID
+## Final Analysis flow
+- Compile inside cygnoNeutrino folder with ```make```
+- Arguments for the executable: toy.txt containing the toyMC data, background and signal (to be converted in xt files with code possibly present in the folder)
+- Example on how to run
+``` ./runfit ../Out_V8_CosThetaFlat_HSBkg_NID/toyMC_txt/${i}/${j}.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/background.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/signal.txt ${j} ${i} NID```
