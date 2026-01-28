@@ -31,4 +31,5 @@ This shows how to correctly launch the code for the Bayesian analysis.
 - Compile inside cygnoNeutrino folder with ```make```
 - Arguments for the executable: toy.txt containing the toyMC data, background and signal (to be converted in xt files with code possibly present in the folder)
 - Example on how to run
+
 ``` ./runfit ../Out_V8_CosThetaFlat_HSBkg_NID/toyMC_txt/${i}/${j}.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/background.txt ../Out_V8_CosThetaFlat_HSBkg_NID/template_txt/signal.txt ${j} ${i} NID```
